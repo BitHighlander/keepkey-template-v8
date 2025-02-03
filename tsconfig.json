@@ -32,7 +32,16 @@
         "name": "next"
       }
     ],
-    "customConditions": ["sui-pro"]
+    "customConditions": ["sui-pro"],
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false,
+    "strictPropertyInitialization": false,
+    "noFallthroughCasesInSwitch": false,
+    "allowSyntheticDefaultImports": true,
+    "skipDefaultLibCheck": true
   },
   "include": [
     "next.d.ts",
