@@ -8,7 +8,6 @@ import {
   defineSlotRecipe,
   useStepsContext,
 } from '@chakra-ui/react'
-import { useSessionStorageValue } from '@react-hookz/web'
 import { LoadingOverlay, Steps } from '@saas-ui/react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
@@ -113,13 +112,12 @@ function OnboardingSteps() {
 
 const OnboardingCompleted = () => {
   const router = useRouter()
-  const workspace = useSessionStorageValue('getting-started.workspace')
 
   return (
     <LoadingOverlay.Root
       bg="bg"
       ref={() => {
-        router.push(`/${workspace.value}`)
+        router.push('/')
       }}
     >
       <LoadingOverlay.Spinner />

@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 import { Heading, useBreakpointValue } from '@chakra-ui/react'
-import { useLocalStorageValue } from '@react-hookz/web'
 import { Has } from '@saas-ui-pro/feature-flags'
 import {
   BackButton,
@@ -42,22 +41,18 @@ export const SettingsSidebar = () => {
     backRef.current?.click()
   })
 
-  const sidebarWidth = useLocalStorageValue('app.sidebar.width', {
-    defaultValue: 280,
-  })
+  const [sidebarWidth, setSidebarWidth] = React.useState(280)
+  const isMobile = useBreakpointValue({ base: true, lg: false })
 
   const onResize: ResizeHandler = ({ width }) => {
-    sidebarWidth.set(width)
+    setSidebarWidth(width)
   }
 
   return (
     <Resizer
-      defaultWidth={sidebarWidth.value}
+      defaultWidth={sidebarWidth}
       onResize={onResize}
-      enabled={useBreakpointValue(
-        { base: false, lg: true },
-        { fallback: 'lg' },
-      )}
+      enabled={isMobile}
     >
       <Sidebar.Root>
         {/* <Sidebar.ToggleButton /> */}

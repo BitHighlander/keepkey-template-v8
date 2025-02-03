@@ -7,9 +7,9 @@ import {
   Text,
   useStepsContext,
 } from '@chakra-ui/react'
-import { useSessionStorageValue } from '@react-hookz/web'
 import { Switch, toast } from '@saas-ui/react'
 import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
 
 import { subscribeToNewsletter } from '#api'
 import { LinkButton } from '#components/button'
@@ -23,9 +23,8 @@ const schema = z.object({
 type FormInput = z.infer<typeof schema>
 
 export const SubscribeStep = () => {
+  const [newsletter, setNewsletter] = useState(false)
   const stepper = useStepsContext()
-
-  const workspace = useSessionStorageValue<string>('getting-started.workspace')
 
   const { mutateAsync } = useMutation({
     mutationFn: subscribeToNewsletter,
