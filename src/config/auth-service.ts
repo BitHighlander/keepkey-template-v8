@@ -1,74 +1,44 @@
 /**
- * Authentication is mocked in this example.
- * You should replace this file by your own auth service.
- *
+ * Authentication is handled by Next-auth.
  * @see https://saas-ui.dev/docs/pro/configuration/authentication
  */
 import { AuthParams, User } from '@saas-ui/auth-provider'
+import { signIn, signOut, getSession } from 'next-auth/react'
 
-const defaultUser = {
-  id: '1',
-  name: 'Demo User',
-  email: 'hello@saas-ui.dev',
-}
-
-const getSession = () => {
-  try {
-    if (typeof window === 'undefined') return
-
-    const session = localStorage.getItem('@app/mock/session')
-
-    return session && JSON.parse(session)
-  } catch (e) {
-    /*  */
-  }
-
-  return null
-}
-
-const setSession = (session: any) => {
-  try {
-    if (typeof window === 'undefined') return
-
-    if (!session) {
-      return localStorage.removeItem('@app/mock/session')
-    }
-
-    localStorage.setItem('@app/mock/session', JSON.stringify(session))
-  } catch (e) {
-    /*  */
+// Extend the next-auth session user type
+declare module 'next-auth' {
+  interface Session {
+    user: User
   }
 }
-
-let user: User | null = getSession()
 
 export const authService = {
   onLogin: async (params: AuthParams) => {
-    user = {
-      ...defaultUser,
+    const result = await signIn('credentials', {
       ...params,
+      redirect: false,
+    })
+    
+    if (result?.error) {
+      throw new Error(result.error)
     }
 
-    setSession(user)
-
-    return user
+    const session = await getSession()
+    return session?.user
   },
   onSignup: async (params: AuthParams) => {
-    user = {
-      ...defaultUser,
-      ...params,
-    }
-
-    setSession(user)
-    return user
+    // For now, just use the same login flow since we're mocking
+    return authService.onLogin(params)
   },
   onLogout: async () => {
-    setSession(null)
+    await signOut({ redirect: false })
   },
   onLoadUser: async () => {
-    return getSession()
+    const session = await getSession()
+    return session?.user
   },
   onGetToken: async () => {
-    return getSession()?.id
+    const session = await getSession()
+    return session?.user?.id
   },
 }

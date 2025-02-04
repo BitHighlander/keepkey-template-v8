@@ -8,6 +8,7 @@ import { useHotkeys } from '@saas-ui/use-hotkeys'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { IconContext } from 'react-icons'
+import { SessionProvider } from 'next-auth/react'
 
 import { Link } from '#components/link'
 import { ModalsProvider } from '#components/modals'
@@ -50,11 +51,13 @@ export function AppProvider({
           <SuiProvider linkComponent={Link} value={system}>
             <FeaturesProvider value={segments}>
               <I18nProvider>
-                <AuthProvider>
-                  <ModalsProvider>
-                    <Hotkeys hotkeys={appHotkeys}>{children}</Hotkeys>
-                  </ModalsProvider>
-                </AuthProvider>
+                <SessionProvider>
+                  <AuthProvider>
+                    <ModalsProvider>
+                      <Hotkeys hotkeys={appHotkeys}>{children}</Hotkeys>
+                    </ModalsProvider>
+                  </AuthProvider>
+                </SessionProvider>
               </I18nProvider>
             </FeaturesProvider>
           </SuiProvider>

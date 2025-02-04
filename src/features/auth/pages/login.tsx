@@ -1,9 +1,10 @@
 'use client'
 
 import { Container, Stack, Text } from '@chakra-ui/react'
-import { useAuth } from '@saas-ui/auth-provider'
 import { FormLayout, SubmitButton } from '@saas-ui/forms'
 import { LoadingOverlay } from '@saas-ui/react/loading-overlay'
+import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 
 import { Form } from '#components/form/form.tsx'
@@ -16,14 +17,20 @@ const schema = z.object({
 })
 
 export const LoginPage = () => {
-  const { isAuthenticated, logIn } = useAuth()
+  const { data: session, status } = useSession()
+  const router = useRouter()
 
-  if (isAuthenticated) {
+  if (status === 'loading') {
     return (
       <LoadingOverlay.Root>
         <LoadingOverlay.Spinner />
       </LoadingOverlay.Root>
     )
+  }
+
+  if (session) {
+    router.replace('/')
+    return null
   }
 
   return (
@@ -41,11 +48,17 @@ export const LoginPage = () => {
           <Form
             schema={schema}
             defaultValues={{
-              email: 'demo@saas-ui.dev',
-              password: 'demo',
+              email: 'user@keepkey.com',
+              password: '123345',
             }}
             onSubmit={async (values) => {
-              await logIn(values)
+              const result = await signIn('credentials', {
+                ...values,
+                redirect: false,
+              })
+              if (result?.error) {
+                return { error: result.error }
+              }
             }}
           >
             {({ Field }) => (
