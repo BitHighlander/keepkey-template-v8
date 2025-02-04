@@ -1,8 +1,44 @@
+// theme.ts
 import { createSystem, defineConfig } from '@chakra-ui/react'
 import { defaultConfig } from '@saas-ui-pro/react'
 
+/**
+ * This theme config forces both light and dark modes to use dark colors.
+ * For example, the bg.DEFAULT token is set so that:
+ *   - In light mode: it is "#121212"
+ *   - In dark mode: it is also "#121212"
+ */
 const config = defineConfig({
   theme: {
+    semanticTokens: {
+      colors: {
+        // Background colors
+        bg: {
+          DEFAULT: {
+            value: { _light: "#ffffff", _dark: "#121212" },
+          },
+          subtle: {
+            value: { _light: "#f5f5f5", _dark: "#1f1f1f" },
+          },
+        },
+        // Foreground/text colors
+        fg: {
+          DEFAULT: {
+            value: { _light: "#171717", _dark: "#E0E0E0" },
+          },
+          muted: {
+            value: { _light: "#666666", _dark: "#B0B0B0" },
+          },
+        },
+        // Border colors
+        border: {
+          DEFAULT: {
+            value: { _light: "#e2e2e2", _dark: "#333333" },
+          },
+        },
+      },
+    },
+    // Add your custom recipes – here we re-map the button variants from the default configuration.
     recipes: {
       button: {
         variants: {
@@ -12,38 +48,9 @@ const config = defineConfig({
             tertiary: defaultConfig.theme?.recipes?.button.variants?.ghost,
           },
         },
-        defaultProps: {
-          variant: 'secondary',
-        },
       },
     },
   },
 })
 
 export const system = createSystem(defaultConfig, config)
-
-// import { extendTheme } from '@chakra-ui/react'
-// import {
-//   theme as baseTheme,
-//   /* withThemeColors */
-// } from '@saas-ui-pro/react'
-
-// // import { theme as glassTheme } from '@saas-ui-pro/theme-glass'
-// import { components } from './components'
-// import semanticTokens from './foundations/semantic-tokens'
-
-// // import colorScheme from './color-schemes/galaxy'
-// // import colorScheme from './color-schemes/earth'
-
-// export const theme = extendTheme(
-//   {
-//     semanticTokens,
-//     components,
-//   },
-//   /**
-//    * Uncomment this to use any of the built-in color schemes.
-//    */
-//   // withThemeColors(colorScheme),
-//   // glassTheme,
-//   baseTheme,
-// )

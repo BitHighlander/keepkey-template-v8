@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 
 import { OnboardingStep } from './onboarding-step'
+import { useColorMode } from '#components/ui/color-mode'
 
 const schema = z.object({
   mode: z.enum(['light', 'dark']),
@@ -16,7 +17,7 @@ const schema = z.object({
 
 export const AppearanceStep = () => {
   const stepper = useStepsContext()
-  // const colorMode = useColorMode()
+  const { colorMode, setColorMode } = useColorMode()
 
   return (
     <OnboardingStep
@@ -24,10 +25,10 @@ export const AppearanceStep = () => {
       title="Choose your style"
       description="You can change the color mode at any time in your profile settings."
       defaultValues={{
-        mode: 'light',
+        mode: colorMode,
       }}
       onSubmit={async (data) => {
-        console.log('data', data)
+        setColorMode(data.mode)
         stepper.goToNextStep()
       }}
       submitLabel="Continue"
@@ -42,7 +43,7 @@ export const AppearanceStep = () => {
           cursor="pointer"
           _hover={{ bg: 'blackAlpha.50' }}
           _dark={{ _hover: { bg: 'whiteAlpha.50' } }}
-          // onClick={() => colorMode.setColorMode('light')}
+          onClick={() => setColorMode('light')}
         >
           <AspectRatio
             ratio={16 / 9}
@@ -51,7 +52,7 @@ export const AppearanceStep = () => {
             overflow="hidden"
             borderWidth="1px"
             bg="gray.50"
-            // data-selected={colorMode.colorMode === 'light' ? '' : undefined}
+            data-selected={colorMode === 'light' ? '' : undefined}
             _selected={{
               borderColor: 'primary.500',
               shadow: 'outline',
@@ -69,7 +70,7 @@ export const AppearanceStep = () => {
           cursor="pointer"
           _hover={{ bg: 'blackAlpha.50' }}
           _dark={{ _hover: { bg: 'whiteAlpha.50' } }}
-          // onClick={() => colorMode.setColorMode('dark')}
+          onClick={() => setColorMode('dark')}
         >
           <AspectRatio
             ratio={16 / 9}
@@ -78,7 +79,7 @@ export const AppearanceStep = () => {
             overflow="hidden"
             borderWidth="1px"
             bg="gray.800"
-            // data-selected={colorMode.colorMode === 'dark' ? '' : undefined}
+            data-selected={colorMode === 'dark' ? '' : undefined}
             _selected={{
               borderColor: 'primary.500',
               shadow: 'outline',

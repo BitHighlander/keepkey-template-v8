@@ -9,8 +9,8 @@ import { Provider } from './provider'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Saas UI',
-    default: 'Saas UI',
+    template: '%s | KeepKey Template',
+    default: 'KeepKey',
   },
   icons: {
     icon: '/favicons/favicon-32x32.png',
@@ -24,15 +24,13 @@ export default async function AppRootLayout({
   children: React.ReactNode
 }) {
   const cookieStore = await cookies()
-
-  const colorMode = (cookieStore.get('chakra-ui-color-mode')?.value ??
-    'dark') as 'light' | 'dark'
+  const colorMode = cookieStore.get('chakra-ui-color-mode')?.value ?? 'dark'
 
   return (
-    <html data-theme={colorMode} style={{ colorScheme: colorMode }}>
+    <html lang="en" data-theme={colorMode}>
       <body className={`chakra-ui-${colorMode}`}>
         <LemonSqueezyScript />
-        <Provider>{children}</Provider>
+        <Provider initialColorMode={colorMode}>{children}</Provider>
       </body>
     </html>
   )
