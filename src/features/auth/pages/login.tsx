@@ -1,6 +1,7 @@
 'use client'
 
 import { Button, Container, HStack, Stack, Text } from '@chakra-ui/react'
+import { useAuth } from '@saas-ui/auth-provider'
 import { FormLayout, SubmitButton } from '@saas-ui/forms'
 import { LoadingOverlay } from '@saas-ui/react/loading-overlay'
 import { signIn, useSession } from 'next-auth/react'
@@ -20,6 +21,7 @@ const schema = z.object({
 export const LoginPage = () => {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { onLogin } = useAuth()
 
   if (status === 'loading') {
     return (
@@ -37,19 +39,7 @@ export const LoginPage = () => {
   const handleGoogleSignIn = async () => {
     try {
       console.log('Starting Google sign-in...')
-      
-      await signIn('google', {
-        callbackUrl: '/',
-        redirect: true,
-        // Force no caching of the auth request
-        authorizationParams: {
-          prompt: 'select_account',
-          access_type: 'offline',
-          response_type: 'code',
-          // Add a timestamp to prevent caching
-          state: `st_${Date.now()}`
-        }
-      })
+      await onLogin({ provider: 'google' })
     } catch (error) {
       console.error('Failed to sign in with Google:', error)
     }

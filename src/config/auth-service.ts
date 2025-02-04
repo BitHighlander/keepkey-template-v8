@@ -14,19 +14,37 @@ declare module 'next-auth' {
 
 export const authService = {
   onLogin: async (params: AuthParams) => {
-    const result = await signIn('credentials', {
-      ...params,
-      redirect: false,
-    })
-    
-    if (result?.error) {
-      throw new Error(result.error)
+    // Handle Google provider
+    if (params.provider === 'google') {
+      const result = await signIn('google', {
+        redirect: false,
+        callbackUrl: '/'
+      })
+      
+      if (result?.error) {
+        throw new Error(result.error)
+      }
+    } else {
+      // Regular credentials login
+      const result = await signIn('credentials', {
+        ...params,
+        redirect: false,
+      })
+      
+      if (result?.error) {
+        throw new Error(result.error)
+      }
     }
 
     const session = await getSession()
     return session?.user
   },
   onSignup: async (params: AuthParams) => {
+    // For Google sign up, use the same flow as login
+    if (params.provider === 'google') {
+      return authService.onLogin(params)
+    }
+    
     // For now, just use the same login flow since we're mocking
     return authService.onLogin(params)
   },
