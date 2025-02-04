@@ -6,12 +6,22 @@ if (!process.env.AUTH_SECRET) {
   throw new Error('AUTH_SECRET is not set')
 }
 
+const prodUrl = 'https://keepkey-template-v8.vercel.app'
+
 export const authConfig: NextAuthOptions = {
+  debug: true, // Enable debug logs
   secret: process.env.AUTH_SECRET,
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+      clientId: process.env.AUTH_GOOGLE_ID ?? '',
+      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? '',
+      authorization: {
+        params: {
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
     CredentialsProvider({
       name: 'Password',

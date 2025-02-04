@@ -37,19 +37,19 @@ export const LoginPage = () => {
   const handleGoogleSignIn = async () => {
     try {
       console.log('Starting Google sign-in...')
-      // Force redirect to true and specify the production callback URL
-      const result = await signIn('google', {
-        callbackUrl: 'https://keepkey-template-v8.vercel.app',
-        redirect: true,
-      })
       
-      // This code won't run if redirect is true, but keeping for debugging if needed
-      if (result?.error) {
-        console.error('Google sign-in error:', result.error)
-      } else if (result?.url) {
-        console.log('Redirecting to:', result.url)
-        window.location.href = result.url // Force hard redirect
-      }
+      await signIn('google', {
+        callbackUrl: '/',
+        redirect: true,
+        // Force no caching of the auth request
+        authorizationParams: {
+          prompt: 'select_account',
+          access_type: 'offline',
+          response_type: 'code',
+          // Add a timestamp to prevent caching
+          state: `st_${Date.now()}`
+        }
+      })
     } catch (error) {
       console.error('Failed to sign in with Google:', error)
     }
