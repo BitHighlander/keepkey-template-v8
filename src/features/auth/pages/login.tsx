@@ -1,10 +1,11 @@
 'use client'
 
-import { Container, Stack, Text } from '@chakra-ui/react'
+import { Button, Container, HStack, Stack, Text } from '@chakra-ui/react'
 import { FormLayout, SubmitButton } from '@saas-ui/forms'
 import { LoadingOverlay } from '@saas-ui/react/loading-overlay'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { FaGoogle } from 'react-icons/fa'
 import { z } from 'zod'
 
 import { Form } from '#components/form/form.tsx'
@@ -33,6 +34,10 @@ export const LoginPage = () => {
     return null
   }
 
+  const handleGoogleSignIn = async () => {
+    await signIn('google', { callbackUrl: '/' })
+  }
+
   return (
     <Stack flex="1" direction="row" minH="100vh">
       <Stack
@@ -44,6 +49,26 @@ export const LoginPage = () => {
       >
         <Container maxWidth="sm">
           <Logo margin="0 auto" mb="12" />
+
+          <Button
+            w="100%"
+            mb="4"
+            onClick={handleGoogleSignIn}
+            variant="outline"
+          >
+            <Stack direction="row" gap={2} align="center">
+              <FaGoogle />
+              <Text>Continue with Google</Text>
+            </Stack>
+          </Button>
+
+          <Stack direction="row" gap={4} align="center" my="4">
+            <Stack flex="1" h="1px" bg="gray.200" />
+            <Text color="fg.muted">
+              or
+            </Text>
+            <Stack flex="1" h="1px" bg="gray.200" />
+          </Stack>
 
           <Form
             schema={schema}
