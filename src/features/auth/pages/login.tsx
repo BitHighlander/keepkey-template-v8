@@ -35,7 +35,21 @@ export const LoginPage = () => {
   }
 
   const handleGoogleSignIn = async () => {
-    await signIn('google', { callbackUrl: '/' })
+    try {
+      const result = await signIn('google', { 
+        callbackUrl: '/',
+        redirect: false 
+      })
+      
+      if (result?.error) {
+        console.error('Google sign-in error:', result.error)
+        // You can add a toast notification here if you want to show the error to the user
+      } else if (result?.url) {
+        router.push(result.url)
+      }
+    } catch (error) {
+      console.error('Failed to sign in with Google:', error)
+    }
   }
 
   return (
