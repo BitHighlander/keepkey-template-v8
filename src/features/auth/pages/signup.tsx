@@ -8,10 +8,13 @@ import {
   HStack,
   Stack,
   Text,
+  Button,
 } from '@chakra-ui/react'
 import { useAuth } from '@saas-ui/auth-provider'
 import { FormLayout, SubmitButton } from '@saas-ui/forms'
 import { LoadingOverlay } from '@saas-ui/react/loading-overlay'
+import { signIn } from 'next-auth/react'
+import { FaGoogle } from 'react-icons/fa'
 import { z } from 'zod'
 
 import { Form } from '#components/form/form.tsx'
@@ -28,10 +31,31 @@ export const SignupPage = () => {
 
   if (isAuthenticated) {
     return (
-      <LoadingOverlay.Root variant="fullscreen">
+      <LoadingOverlay.Root>
         <LoadingOverlay.Spinner />
       </LoadingOverlay.Root>
     )
+  }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      console.log('Starting Google sign-in...')
+      
+      await signIn('google', {
+        callbackUrl: '/',
+        redirect: true,
+        // Force no caching of the auth request
+        authorizationParams: {
+          prompt: 'select_account',
+          access_type: 'offline',
+          response_type: 'code',
+          // Add a timestamp to prevent caching
+          state: `st_${Date.now()}`
+        }
+      })
+    } catch (error) {
+      console.error('Failed to sign in with Google:', error)
+    }
   }
 
   return (
@@ -46,11 +70,31 @@ export const SignupPage = () => {
         <Container maxWidth="sm">
           <Logo margin="0 auto" mb="12" />
 
+          <Button
+            w="100%"
+            mb="4"
+            onClick={handleGoogleSignIn}
+            variant="outline"
+          >
+            <Stack direction="row" gap={2} align="center">
+              <FaGoogle />
+              <Text>Continue with Google</Text>
+            </Stack>
+          </Button>
+
+          <Stack direction="row" gap={4} align="center" my="4">
+            <Stack flex="1" h="1px" bg="gray.200" />
+            <Text color="fg.muted">
+              or
+            </Text>
+            <Stack flex="1" h="1px" bg="gray.200" />
+          </Stack>
+
           <Form
             schema={schema}
             defaultValues={{
-              email: 'demo@saas-ui.dev',
-              password: 'demo',
+              email: '',
+              password: '',
             }}
             onSubmit={async (values) => {
               await signUp(values)
@@ -60,7 +104,7 @@ export const SignupPage = () => {
               <FormLayout>
                 <Field name="email" label="Email" type="email" />
                 <Field name="password" label="Password" type="password" />
-                <SubmitButton>Log in</SubmitButton>
+                <SubmitButton>Sign up</SubmitButton>
               </FormLayout>
             )}
           </Form>
